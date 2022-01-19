@@ -3,11 +3,28 @@
 The design choices that I have made for this application are described in the document DESING_CHOICES.md which is in the same folder as this README.
 
 ## Starting the service
-To start the service, follow the steps provided below (this is a java based service and we assume below that you have `java 11` at least and `maven` installed on your machine):
+We suggest below two ways to start the service: 
+1. Starting the service directly
+2. Building a docker image and running the service through docker.
+
+This is a java based service, so it is required to have `java 11` installed locally. However, we leverage a maven wrapper, so there is no need to have maven installed locally.
+We also assume that the operating system used to test this code is linux based (Ubuntu for e.g).
+
+### Starting the service directly
+This is the fastest way to get the service up and running, below are the steps are to follow:
 1. Clone this repository to your local machine with `git clone git@github.com:kapokmi/copper.git` 
 2. From the terminal, go to the root folder of the project (the one containing the pom.xml file as a direct child)
-3. From that root folder, run the command: `mvn spring-boot:run`
-4. It takes about 2s for the full application context to be loaded and all the beans wire correctly and after that the service should be up.
+3. From that root folder, run the command: `./mvnw spring-boot:run`
+4. It takes about 2s for the full application context to be loaded and all the beans wire correctly and after that the service should be up and accessible at `http://localhost:8080/`
+
+### Building a docker image and running it
+Here we leverage spring-boot build-image plug-in to build a docker image.
+1. Clone this repository to your local machine with `git clone git@github.com:kapokmi/copper.git`
+2. From the terminal, go to the root folder of the project (the one containing the pom.xml file as a direct child)
+3. From that root folder, run the following command to build a docker image: `./mvnw org.springframework.boot:spring-boot-maven-plugin:2.6.2:build-image -DskipTests=true -Dspring-boot.build-image.imageName=bitmex-integration` (you might need to add `sudo` at the beginning of your command if you don't have a local docker group set up on your machine or if you don't belong to that group.)
+4. Once the image has been successfully built, you can run it with the command: `docker run -p 8080:8080 -t bitmex-integration`
+5. It takes about 2s for the full application context to be loaded and all the beans wire correctly and after that the service should be up and accessible at `http://localhost:8080/`
+
 
 ## Sample curl requests
 All the requests below require to pass, either as parameters or as part of the body, both the `apiKey` and the  `apiSecret` provided by the Bitmex Tesnet. This design choice is explained in the file `DESIGN_CHOICES.md`.
